@@ -1,92 +1,92 @@
 #include "main.h"
 
-/**
- * A callback function for LLEMU's center button.
- *
- * When this callback is fired, it will toggle line 2 of the LCD text between
- * "I was pressed!" and nothing.
- */
-void on_center_button() {
-	static bool pressed = false;
-	pressed = !pressed;
-	if (pressed) {
-		pros::lcd::set_text(2, "I was pressed!");
-	} else {
-		pros::lcd::clear_line(2);
-	}
-}
-
-/**
- * Runs initialization code. This occurs as soon as the program is started.
- *
- * All other competition modes are blocked by initialize; it is recommended
- * to keep execution time for this mode under a few seconds.
- */
 void initialize() {
+    // General Initialization
 	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Hello PROS User!");
+    imu.calibrate();
+    catapult->startTask();
 
-	pros::lcd::register_btn1_cb(on_center_button);
+    // Auton Selector
+    const char* autons[3]  = {"a", "b", "c"};
+    Selector::init(180, 1, autons);
 }
 
-/**
- * Runs while the robot is in the disabled state of Field Management System or
- * the VEX Competition Switch, following either autonomous or opcontrol. When
- * the robot is enabled, this task will exit.
- */
 void disabled() {}
 
-/**
- * Runs after initialize(), and before autonomous when connected to the Field
- * Management System or the VEX Competition Switch. This is intended for
- * competition-specific initialization routines, such as an autonomous selector
- * on the LCD.
- *
- * This task will exit when the robot is enabled and autonomous or opcontrol
- * starts.
- */
 void competition_initialize() {}
 
-/**
- * Runs the user autonomous code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the autonomous
- * mode. Alternatively, this function may be called in initialize or opcontrol
- * for non-competition testing purposes.
- *
- * If the robot is disabled or communications is lost, the autonomous task
- * will be stopped. Re-enabling the robot will restart the task, not re-start it
- * from where it left off.
- */
-void autonomous() {}
+void autonomous() {
+    leftChassis.setBrakeMode(AbstractMotor::brakeMode::brake);
+    rightChassis.setBrakeMode(AbstractMotor::brakeMode::brake);
 
-/**
- * Runs the operator control code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the operator
- * control mode.
- *
- * If no competition control is connected, this function will run immediately
- * following initialize().
- *
- * If the robot is disabled or communications is lost, the
- * operator control task will be stopped. Re-enabling the robot will restart the
- * task, not resume it from where it left off.
- */
+    switch(Selector::auton) {
+        case 0:
+            doNothing();
+            break;
+
+        case 1:
+            redAutonA();
+            break;
+        
+        case 2: 
+            redAutonB();
+            break;
+
+        case 3: 
+            redAutonC();
+            break;
+        
+        case -1: 
+            blueAutonA();
+            break;
+        
+        case -2:
+            blueAutonB();
+            break;
+        
+        case -3: 
+            blueAutonC();
+            break;
+    }
+}
+
+void createBlankBackground(){
+    lv_obj_t *background;
+    lv_style_t backgroundStyle;
+    lv_style_copy(&backgroundStyle, &lv_style_plain);
+    backgroundStyle.body.main_color = LV_COLOR_BLACK;
+    backgroundStyle.body.grad_color = LV_COLOR_BLACK;
+    backgroundStyle.body.radius = 0;
+    backgroundStyle.text.color = LV_COLOR_WHITE;
+    background = lv_obj_create(lv_scr_act(), NULL);
+    lv_obj_set_free_num(background, 0);
+    lv_obj_set_style(background, &backgroundStyle);
+    lv_obj_set_size(background, LVGL_SCREEN_WIDTH, LVGL_SCREEN_HEIGHT);
+    lv_obj_align(background, NULL, LV_ALIGN_CENTER, 0, 0);
+}
+
 void opcontrol() {
-	pros::Controller master(pros::E_CONTROLLER_MASTER);
-	pros::Motor left_mtr(1);
-	pros::Motor right_mtr(2);
+    // Gif background
+    createBlankBackground();
+    auto gif = std::make_unique<Gif>("/usd/gif/crab-rave.gif", lv_scr_act());
 
-	while (true) {
-		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
-		int left = master.get_analog(ANALOG_LEFT_Y);
-		int right = master.get_analog(ANALOG_RIGHT_Y);
+	leftChassis.setBrakeMode(AbstractMotor::brakeMode::coast);
+    rightChassis.setBrakeMode(AbstractMotor::brakeMode::coast);
 
-		left_mtr = left;
-		right_mtr = right;
-		pros::delay(20);
-	}
+    auto model = std::static_pointer_cast<SkidSteerModel>(chassis->getModel());
+
+    while(true) {
+        model->curvature(
+            master.getAnalog(ControllerAnalog::leftY), 
+            master.getAnalog(ControllerAnalog::rightX), 
+            DEADBAND
+        );
+
+        if(master.getDigital(ControllerDigital::L1)) {
+            catapult->fire();
+        }
+        intake.moveVoltage(12000 * (master.getDigital(ControllerDigital::R1) - master.getDigital(ControllerDigital::R2)));
+
+        pros::delay(10);
+    }
 }
