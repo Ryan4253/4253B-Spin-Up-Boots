@@ -1,4 +1,5 @@
 #include "main.h"
+#include "GUI/gif-pros/gifclass.hpp"
 
 void initialize() {
     // General Initialization
@@ -68,7 +69,7 @@ void createBlankBackground(){
 void opcontrol() {
     // Gif background
     createBlankBackground();
-    auto gif = std::make_unique<Gif>("/usd/gif/crab-rave.gif", lv_scr_act());
+    // Gif gif("/usd/gif/crab-rave.gif", lv_scr_act()); da thing is erroring out 
 
 	leftChassis.setBrakeMode(AbstractMotor::brakeMode::coast);
     rightChassis.setBrakeMode(AbstractMotor::brakeMode::coast);

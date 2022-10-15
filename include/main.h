@@ -78,7 +78,6 @@ void opcontrol(void);
 //#include <iostream>
 #include "Subsystems/Catapult.hpp"
 #include "Subsystems/Globals.hpp"
-#include "GUI/gif-pros/gifclass.hpp"
 #include "GUI/AutonSelector.hpp"
 #include "Autons.hpp"
 #endif
