@@ -86,7 +86,12 @@ void opcontrol() {
         if(master.getDigital(ControllerDigital::L1)) {
             catapult->fire();
         }
-        intake.moveVoltage(12000 * (master.getDigital(ControllerDigital::R1) - master.getDigital(ControllerDigital::R2)));
+
+        if(catapult->getState() == CatapultState::LOAD_POSITION) {
+            intake.moveVoltage(12000 * (master.getDigital(ControllerDigital::R1) - master.getDigital(ControllerDigital::R2)));
+        } else {
+            intake.moveVoltage(0);
+        }
 
         pros::delay(10);
     }
