@@ -32,6 +32,8 @@ class Catapult : public ryan::TaskWrapper, public ryan::StateMachine<CatapultSta
 
     void fire();
 
+    CatapultState getState();
+
     void loop() override;
 
     protected:

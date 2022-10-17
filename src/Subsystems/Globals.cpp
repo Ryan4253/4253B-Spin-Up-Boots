@@ -6,18 +6,18 @@ using namespace okapi;
 Controller master(ControllerId::master);
 
 // MOTORS
-Motor leftFront(1, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
-Motor leftMid(1, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
-Motor leftBack(1, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
-Motor rightFront(1, true, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
-Motor rightMid(1, true, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
-Motor rightBack(1, true, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
+Motor leftFront(10, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
+Motor leftMid(9, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
+Motor leftBack(8, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
+Motor rightFront(7, true, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
+Motor rightMid(6, true, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
+Motor rightBack(5, true, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
 
 MotorGroup leftChassis({leftFront, leftMid, leftBack});
 MotorGroup rightChassis({rightFront, rightMid, rightBack});
 
 // Motor catapultMotor(11, false, AbstractMotor::gearset::red, AbstractMotor::encoderUnits::degrees);
-Motor intake(6, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
+Motor intake(19, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
 
 // PNEUMATICS
 Pneumatics intakeAngler('A');
@@ -26,9 +26,9 @@ Pneumatics expansion('G');
 // SENSORS 
 IMU imu(20);
 // ADIButton catapultButton('G', false);
-ADIEncoder leftTracker('A', 'B', true);
-ADIEncoder rightTracker('E', 'F', false);
-ADIEncoder midTracker('C', 'D', false);
+// ADIEncoder leftTracker('A', 'B', true);
+// ADIEncoder rightTracker('E', 'F', false);
+// ADIEncoder midTracker('C', 'D', false);
 
 // MOTION PROFILE CONSTANTS
 ProfileConstraint moveLimit({3_ftps, 5_ftps2, 5_ftps2, 25_ftps3}); //! todo!
@@ -49,5 +49,5 @@ std::shared_ptr<IterativePosPIDController> turnPID =
     std::make_shared<IterativePosPIDController>(0.037, 0.0, 0.00065, 0, TimeUtilFactory::withSettledUtilParams(2, 2, 100_ms));
 
 std::shared_ptr<Catapult> catapult = 
-    std::make_shared<Catapult>(std::make_shared<Motor>(16), 
-                               std::make_shared<ADIButton>('G', false));
+    std::make_shared<Catapult>(std::make_shared<Motor>(-20), 
+                               std::make_shared<ADIButton>('H', false));
