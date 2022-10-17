@@ -25,6 +25,10 @@ void Catapult::fire() {
     fired = true;
 }
 
+CatapultState Catapult::getState() {
+    return cataState;
+}
+
 void Catapult::loop() {
     while(true) {
         if(!isDisabled) {
@@ -39,7 +43,7 @@ void Catapult::loop() {
                         fired = false;
                     }
                     if((button->isPressed() && fired) || (!button->isPressed())) {
-                        motor->moveVoltage(12000);
+                        motor->moveVoltage(8000);
                         cataState = CatapultState::MOVING;
                     } else {
                         motor->moveVoltage(0);

@@ -68,7 +68,7 @@ void createBlankBackground(){
 
 void opcontrol() {
     // Gif background
-    createBlankBackground();
+    // createBlankBackground();
     // Gif gif("/usd/gif/crab-rave.gif", lv_scr_act()); da thing is erroring out 
 
 	leftChassis.setBrakeMode(AbstractMotor::brakeMode::coast);
@@ -77,9 +77,14 @@ void opcontrol() {
     auto model = std::static_pointer_cast<SkidSteerModel>(chassis->getModel());
 
     while(true) {
-        model->curvature(
+        // model->curvature(
+        //     master.getAnalog(ControllerAnalog::leftY), 
+        //     master.getAnalog(ControllerAnalog::rightX), 
+        //     DEADBAND
+        // );
+        model->tank(
             master.getAnalog(ControllerAnalog::leftY), 
-            master.getAnalog(ControllerAnalog::rightX), 
+            master.getAnalog(ControllerAnalog::rightY), 
             DEADBAND
         );
 
