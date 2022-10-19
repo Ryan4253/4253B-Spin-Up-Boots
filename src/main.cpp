@@ -6,6 +6,7 @@ void initialize() {
 	pros::lcd::initialize();
     imu.calibrate();
     catapult->startTask();
+    catapult->setSpeed(0.8);
 
     // Auton Selector
     const char* autons[3]  = {"a", "b", "c"};
@@ -71,22 +72,25 @@ void opcontrol() {
     // createBlankBackground();
     // Gif gif("/usd/gif/crab-rave.gif", lv_scr_act()); da thing is erroring out 
 
+    // profiler->setTarget(8_ft, true);
+    // while(true) pros::delay(1000);
+
 	leftChassis.setBrakeMode(AbstractMotor::brakeMode::coast);
     rightChassis.setBrakeMode(AbstractMotor::brakeMode::coast);
 
     auto model = std::static_pointer_cast<SkidSteerModel>(chassis->getModel());
 
     while(true) {
-        // model->curvature(
-        //     master.getAnalog(ControllerAnalog::leftY), 
-        //     master.getAnalog(ControllerAnalog::rightX), 
-        //     DEADBAND
-        // );
-        model->tank(
+        model->curvature(
             master.getAnalog(ControllerAnalog::leftY), 
-            master.getAnalog(ControllerAnalog::rightY), 
+            master.getAnalog(ControllerAnalog::rightX), 
             DEADBAND
         );
+        // model->tank(
+        //     master.getAnalog(ControllerAnalog::leftY), 
+        //     master.getAnalog(ControllerAnalog::rightY), 
+        //     DEADBAND
+        // );
 
         if(master.getDigital(ControllerDigital::L1)) {
             catapult->fire();

@@ -17,7 +17,7 @@ MotorGroup leftChassis({leftFront, leftMid, leftBack});
 MotorGroup rightChassis({rightFront, rightMid, rightBack});
 
 // Motor catapultMotor(11, false, AbstractMotor::gearset::red, AbstractMotor::encoderUnits::degrees);
-Motor intake(19, false, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
+Motor intake(19, true, AbstractMotor::gearset::blue, AbstractMotor::encoderUnits::degrees);
 
 // PNEUMATICS
 Pneumatics intakeAngler('A');
@@ -31,13 +31,13 @@ IMU imu(20);
 // ADIEncoder midTracker('C', 'D', false);
 
 // MOTION PROFILE CONSTANTS
-ProfileConstraint moveLimit({3_ftps, 5_ftps2, 5_ftps2, 25_ftps3}); //! todo!
+ProfileConstraint moveLimit({6_ftps, 10_ftps2, 10_ftps2, 32_ftps3}); //! todo!
 
 // SUBSYSTEM CONTROLLERS
 std::shared_ptr<ChassisController> chassis = ChassisControllerBuilder()
     .withMotors(leftChassis, rightChassis)
     // !todo!
-    .withDimensions({AbstractMotor::gearset::blue, 5.0/7.0}, {{3.25_in, 1.294_ft}, imev5BlueTPR})
+    .withDimensions({AbstractMotor::gearset::blue, 1.0}, {{2.75_in, 1.294_ft}, imev5BlueTPR})
     .build();
 
 std::shared_ptr<AsyncMotionProfiler> profiler = AsyncMotionProfilerBuilder()

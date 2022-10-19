@@ -34,6 +34,12 @@ class Catapult : public ryan::TaskWrapper, public ryan::StateMachine<CatapultSta
 
     CatapultState getState();
 
+    /**
+     * @brief Set catapult speed [-1, 1]
+     * 
+     */
+    void setSpeed(double speed);
+
     void loop() override;
 
     protected:
@@ -46,4 +52,5 @@ class Catapult : public ryan::TaskWrapper, public ryan::StateMachine<CatapultSta
     bool fired{false};
     ControlState state;
     CatapultState cataState;
+    double cataSpeed;
 };

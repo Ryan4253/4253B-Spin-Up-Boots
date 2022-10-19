@@ -9,6 +9,7 @@ Catapult::Catapult(const std::shared_ptr<okapi::AbstractMotor>& imotor,
     isDisabled = false;
     state = ControlState::MANUAL;
     cataState = CatapultState::IDLE;
+    cataSpeed = 1.0;
 }
 
 void Catapult::disable(bool disabled) {
@@ -29,6 +30,10 @@ CatapultState Catapult::getState() {
     return cataState;
 }
 
+void Catapult::setSpeed(double speed) {
+    cataSpeed = speed;
+}
+
 void Catapult::loop() {
     while(true) {
         if(!isDisabled) {
@@ -43,7 +48,7 @@ void Catapult::loop() {
                         fired = false;
                     }
                     if((button->isPressed() && fired) || (!button->isPressed())) {
-                        motor->moveVoltage(8000);
+                        motor->moveVoltage(12000 * cataSpeed);
                         cataState = CatapultState::MOVING;
                     } else {
                         motor->moveVoltage(0);
