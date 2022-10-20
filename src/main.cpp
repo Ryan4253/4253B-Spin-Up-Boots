@@ -72,7 +72,11 @@ void opcontrol() {
     // createBlankBackground();
     // Gif gif("/usd/gif/crab-rave.gif", lv_scr_act()); da thing is erroring out 
 
-    // profiler->setTarget(8_ft, true);
+    // leftChassis.setBrakeMode(AbstractMotor::brakeMode::brake);
+    // rightChassis.setBrakeMode(AbstractMotor::brakeMode::brake);
+
+    // profiler->setTarget(6_ft, true);
+    // profiler->setTarget(-6_ft, true);
     // while(true) pros::delay(1000);
 
 	leftChassis.setBrakeMode(AbstractMotor::brakeMode::coast);

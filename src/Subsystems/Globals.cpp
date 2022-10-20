@@ -31,7 +31,7 @@ IMU imu(20);
 // ADIEncoder midTracker('C', 'D', false);
 
 // MOTION PROFILE CONSTANTS
-ProfileConstraint moveLimit({6_ftps, 10_ftps2, 10_ftps2, 32_ftps3}); //! todo!
+ProfileConstraint moveLimit({6_ftps, 10_ftps2, 10_ftps2, 34_ftps3}); //! todo!
 
 // SUBSYSTEM CONTROLLERS
 std::shared_ptr<ChassisController> chassis = ChassisControllerBuilder()
