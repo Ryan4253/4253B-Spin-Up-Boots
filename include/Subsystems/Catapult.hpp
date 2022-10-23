@@ -1,31 +1,28 @@
 #pragma once
-#include "ryanlib/TaskWrapper.hpp"
-#include "ryanlib/StateMachine.hpp"
-#include "okapi/api/device/motor/abstractMotor.hpp"
 #include "okapi/api/device/button/abstractButton.hpp"
+#include "okapi/api/device/motor/abstractMotor.hpp"
+#include "ryanlib/StateMachine.hpp"
+#include "ryanlib/TaskWrapper.hpp"
 
-enum class CatapultState{
-    MOVING, LOAD_POSITION, IDLE
-};
 
-enum class ControlState {
-    MANUAL, AUTOMATIC
-};
+enum class CatapultState { MOVING, LOAD_POSITION, IDLE };
+
+enum class ControlState { MANUAL, AUTOMATIC };
 
 template class ryan::StateMachine<CatapultState>;
 
-class Catapult : public ryan::TaskWrapper, public ryan::StateMachine<CatapultState>{
+class Catapult : public ryan::TaskWrapper, public ryan::StateMachine<CatapultState> {
     public:
-    Catapult(const std::shared_ptr<okapi::AbstractMotor>& imotor, 
-             const std::shared_ptr<okapi::AbstractButton>& ibutton);
-    
+    Catapult(const std::shared_ptr<okapi::AbstractMotor> &imotor,
+             const std::shared_ptr<okapi::AbstractButton> &ibutton);
+
     // Catapult();
 
     void disable(bool disabled);
 
     /**
      * @brief Set manual speed [-1, 1]
-     * 
+     *
      * @param percentSpeed [-1, 1]
      */
     void jog(double percentSpeed);
@@ -36,7 +33,7 @@ class Catapult : public ryan::TaskWrapper, public ryan::StateMachine<CatapultSta
 
     /**
      * @brief Set catapult speed [-1, 1]
-     * 
+     *
      */
     void setSpeed(double speed);
 
