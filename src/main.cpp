@@ -3,12 +3,13 @@
 
 void initialize() {
     // General Initialization
-	pros::lcd::initialize();
+    pros::lcd::initialize();
     imu.calibrate();
     catapult->startTask();
+    catapult->setSpeed(0.8);
 
     // Auton Selector
-    const char* autons[3]  = {"a", "b", "c"};
+    const char *autons[3] = {"a", "b", "c"};
     Selector::init(180, 1, autons);
 }
 
@@ -20,38 +21,38 @@ void autonomous() {
     leftChassis.setBrakeMode(AbstractMotor::brakeMode::brake);
     rightChassis.setBrakeMode(AbstractMotor::brakeMode::brake);
 
-    switch(Selector::auton) {
-        case 0:
-            doNothing();
-            break;
+    switch (Selector::auton) {
+    case 0:
+        doNothing();
+        break;
 
-        case 1:
-            redAutonA();
-            break;
-        
-        case 2: 
-            redAutonB();
-            break;
+    case 1:
+        redAutonA();
+        break;
 
-        case 3: 
-            redAutonC();
-            break;
-        
-        case -1: 
-            blueAutonA();
-            break;
-        
-        case -2:
-            blueAutonB();
-            break;
-        
-        case -3: 
-            blueAutonC();
-            break;
+    case 2:
+        redAutonB();
+        break;
+
+    case 3:
+        redAutonC();
+        break;
+
+    case -1:
+        blueAutonA();
+        break;
+
+    case -2:
+        blueAutonB();
+        break;
+
+    case -3:
+        blueAutonC();
+        break;
     }
 }
 
-void createBlankBackground(){
+void createBlankBackground() {
     lv_obj_t *background;
     lv_style_t backgroundStyle;
     lv_style_copy(&backgroundStyle, &lv_style_plain);
@@ -69,31 +70,37 @@ void createBlankBackground(){
 void opcontrol() {
     // Gif background
     // createBlankBackground();
-    // Gif gif("/usd/gif/crab-rave.gif", lv_scr_act()); da thing is erroring out 
+    // Gif gif("/usd/gif/crab-rave.gif", lv_scr_act()); da thing is erroring out
 
-	leftChassis.setBrakeMode(AbstractMotor::brakeMode::coast);
+    // leftChassis.setBrakeMode(AbstractMotor::brakeMode::brake);
+    // rightChassis.setBrakeMode(AbstractMotor::brakeMode::brake);
+
+    // profiler->setTarget(6_ft, true);
+    // profiler->setTarget(-6_ft, true);
+    // while(true) pros::delay(1000);
+
+    leftChassis.setBrakeMode(AbstractMotor::brakeMode::coast);
     rightChassis.setBrakeMode(AbstractMotor::brakeMode::coast);
 
     auto model = std::static_pointer_cast<SkidSteerModel>(chassis->getModel());
 
-    while(true) {
-        // model->curvature(
-        //     master.getAnalog(ControllerAnalog::leftY), 
-        //     master.getAnalog(ControllerAnalog::rightX), 
+    while (true) {
+        model->curvature(master.getAnalog(ControllerAnalog::leftY),
+                         master.getAnalog(ControllerAnalog::rightX),
+                         DEADBAND);
+        // model->tank(
+        //     master.getAnalog(ControllerAnalog::leftY),
+        //     master.getAnalog(ControllerAnalog::rightY),
         //     DEADBAND
         // );
-        model->tank(
-            master.getAnalog(ControllerAnalog::leftY), 
-            master.getAnalog(ControllerAnalog::rightY), 
-            DEADBAND
-        );
 
-        if(master.getDigital(ControllerDigital::L1)) {
+        if (master.getDigital(ControllerDigital::L1)) {
             catapult->fire();
         }
 
-        if(catapult->getState() == CatapultState::LOAD_POSITION) {
-            intake.moveVoltage(12000 * (master.getDigital(ControllerDigital::R1) - master.getDigital(ControllerDigital::R2)));
+        if (catapult->getState() == CatapultState::LOAD_POSITION) {
+            intake.moveVoltage(12000 * (master.getDigital(ControllerDigital::R1) -
+                                        master.getDigital(ControllerDigital::R2)));
         } else {
             intake.moveVoltage(0);
         }

@@ -1,8 +1,9 @@
-#pragma once 
-#include "ryanlib/api.hpp"
-#include "okapi/api.hpp"
+#pragma once
 #include "Subsystems/Catapult.hpp"
+#include "okapi/api.hpp"
 #include "ryanlib/Pneumatics.hpp"
+#include "ryanlib/api.hpp"
+
 
 using namespace okapi;
 
