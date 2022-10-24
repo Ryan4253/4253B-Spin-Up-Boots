@@ -85,14 +85,14 @@ void opcontrol() {
     auto model = std::static_pointer_cast<SkidSteerModel>(chassis->getModel());
 
     while (true) {
-        model->curvature(master.getAnalog(ControllerAnalog::leftY),
-                         master.getAnalog(ControllerAnalog::rightX),
-                         DEADBAND);
-        // model->tank(
-        //     master.getAnalog(ControllerAnalog::leftY),
-        //     master.getAnalog(ControllerAnalog::rightY),
-        //     DEADBAND
-        // );
+        // model->curvature(master.getAnalog(ControllerAnalog::leftY),
+        //                  master.getAnalog(ControllerAnalog::rightX),
+        //                  DEADBAND);
+        model->tank(
+            master.getAnalog(ControllerAnalog::leftY),
+            master.getAnalog(ControllerAnalog::rightY),
+            DEADBAND
+        );
 
         if (master.getDigital(ControllerDigital::L1)) {
             catapult->fire();
